@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  customer_id: 1
+  company_id: 1
+  tries: 1
+  success: 1
+
+two:
+  customer_id: 1
+  company_id: 1
+  tries: 1
+  success: 1
