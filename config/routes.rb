@@ -1,10 +1,16 @@
 MfaService::Application.routes.draw do
 
+  get "static_pages/home"
+
+  get "static_pages/help"
+
+  get "static_pages/about"
+
+  devise_for :companies, :controllers => {:registrations => "companies/registrations"}
+
   resources :customers
 
-  devise_for :companies
-
-  resources :companies
+  resources :companies, only: [:index, :update, :show, :edit]
 
   root to: "home#index"
 
