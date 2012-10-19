@@ -12,7 +12,7 @@ class Companies::RegistrationsController < Devise::RegistrationsController
 
   def send_sms
   	 sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
-     sms.send( :msg => "Company Signed!", :dest => "+6592710879" , :sender_name => "Easy MFA Service")
+     sms.send( :msg => "Company Signed!", :dest => "+6592710879")
      puts "Sms sent"
   end
 end
