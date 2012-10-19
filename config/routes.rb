@@ -12,7 +12,7 @@ MfaService::Application.routes.draw do
 
   resources :companies, only: [:index, :update, :show, :edit]
 
-  root to: "home#index"
+  root to: "static_pages#home"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
