@@ -64,7 +64,8 @@ config.i18n.fallbacks = true
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-   # Action Mailer Settings
+  
+  # Action Mailer Settings
   # http://guides.rubyonrails.org/action_mailer_basics.html
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
