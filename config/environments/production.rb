@@ -56,7 +56,7 @@ MfaService::Application.configure do
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)
-  config.i18n.fallbacks = true
+config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
@@ -64,4 +64,19 @@ MfaService::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+   # Action Mailer Settings
+  # http://guides.rubyonrails.org/action_mailer_basics.html
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  
+  ActionMailer::Base.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    
+    :user_name            => "mfaservicecs3235@gmail.com",
+    :password             => "mfaservice",
+    
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
 end

@@ -64,6 +64,16 @@ class CustomersController < ApplicationController
         puts "account exists. Proceeding to create entry in CompanyCustomer table"
       end
 
+      @user = @customer
+      UserMailer.welcome_email(@user).deliver
+      # TODO: Send email and OTP 
+      if @account_created 
+        # Tell the UserMailer to send a welcome Email after save
+        
+      else
+        # Nothing
+      end
+
       @customer2 = Customer.find_by_email(@customer.email)
       @customer_company = CompanyCustomer.new(
         :company_id => @company.id, 
