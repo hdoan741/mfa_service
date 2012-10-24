@@ -1,5 +1,10 @@
 MfaService::Application.routes.draw do
 
+  authenticated :company do
+    root :to => "home#index"
+  end
+  root :to => "static_pages#home"
+
   get "static_pages/home"
 
   get "static_pages/help"
@@ -15,8 +20,6 @@ MfaService::Application.routes.draw do
   resources :customers
 
   resources :companies, only: [:index, :update, :show, :edit]
-
-  root to: "static_pages#home"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
