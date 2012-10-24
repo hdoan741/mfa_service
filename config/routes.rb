@@ -6,6 +6,10 @@ MfaService::Application.routes.draw do
 
   get "static_pages/about"
 
+  match "validate" => "static_pages#validate"
+
+  match "requestOtp" => "static_pages#requestOtp"
+
   devise_for :companies, :controllers => {:registrations => "companies/registrations"}
 
   resources :customers
