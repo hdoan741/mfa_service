@@ -6,4 +6,10 @@ class UserMailer < ActionMailer::Base
 		@url = "http://example.com/login"
 		mail(:to => user.email, :subject => "Welcome to My Awesome Site")
 	end
+
+	def welcome_add_company_account_email(user)
+		@user = user
+		@url = "http://example.com/login"
+		mail(:to => user.email, :subject => "You have added a sign in for a company")
+	end
 end
