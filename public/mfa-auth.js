@@ -30,9 +30,14 @@
   // TODO: need to extract user / company information to send with the request
   var submitOTP = function(evt) {
     var otp = $(otp_input).val();
+    var data = {
+      'otp': otp,
+      'user_email': user_email,
+      'company_id': company_id
+    };
     $.ajax({
       url: 'http://0.0.0.0:3000/validate.js',
-      data: {'otp': otp},
+      data: data,
       success: validatedCallback,
       dataType: 'jsonp'
     });
@@ -41,8 +46,13 @@
   // TODO: need to extract user / company information to send with the request
   var requestOTP = function(evt) {
     var otp = $(otp_input).val();
+    var data = {
+      'user_email': user_email,
+      'company_id': company_id
+    };
     $.ajax({
       url: 'http://0.0.0.0:3000/requestOtp.js',
+      data: data,
       success: requestedCallback,
       dataType: 'jsonp'
     });
@@ -52,11 +62,17 @@
   var otp_submit = $('<button>').html('Submit').addClass('mfa-submit-btn');
   var otp_regen = $('<button>').html('Resend OTP Code').addClass('mfa-regenerate-btn');
   var otp_form = $('<div>').addClass('mfa-form');
+
+  var company_id = $('#otp-script').attr('data-company');
+  var user_email = $('#otp-script').attr('data-user');
+  console.log(company_id, user_email);
+
   otp_form.append(otp_input).append(otp_submit).append(otp_regen);
   $(otp_submit).click(submitOTP);
   $(otp_regen).click(requestOTP);
 
   $('#otp-script').parent().append(otp_form);
+
   // initial request.
   requestOTP();
 }).call(this);
