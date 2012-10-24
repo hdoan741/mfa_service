@@ -1,11 +1,14 @@
 == Welcome to MFA Service
+
 CS3235 Project Assignment
 
--- Summary 
+== Summary
+
 An App to extend the One Time Password framework of Multi Factor Authentication as a service.
 
--- Technical Overkills
-Usage of Rails
-Email Facility
-Javascript Widget
-HTTPS
+== Technical Overkills
+
+* Usage of Rails
+* Email Facility
+* Javascript Widget
+* HTTPS
