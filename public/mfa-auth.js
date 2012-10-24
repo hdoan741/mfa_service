@@ -1,5 +1,3 @@
-
-
 // MFA authentication module
 // to be included in companies' page to request user for 2nd authentication
 //
@@ -15,35 +13,50 @@
 //    5.2 Failure 3 times => resend sms.
 //
 (function() {
-  // create a form
-  var createElement = function(type, attrs) {
-    var el = document.createElement(type);
-    for (attr_name in attrs) {
-      el.setAttribute(attr_name, attrs[attr_name]);
+
+  // TODO: figure out how client should make use of the validation result
+  var validatedCallback = function(data) {
+    console.log('validatedCallback', data);
+    alert('Received validation token = ' + data.token);
+  };
+
+  var requestedCallback = function(data) {
+    console.log('requestedCallback', data);
+    if (data.status = 'OK') {
+      alert('An OTP code has been sent to your phone. Please enter it to validate your access!');
     }
-    return el;
   };
 
-  var generate_form = function() {
-    var otp_form = createElement('form', {
-      'class': 'mfa-form'
+  // TODO: need to extract user / company information to send with the request
+  var submitOTP = function(evt) {
+    var otp = $(otp_input).val();
+    $.ajax({
+      url: 'http://0.0.0.0:3000/validate.js',
+      data: {'otp': otp},
+      success: validatedCallback,
+      dataType: 'jsonp'
     });
-    var otp_input = createElement('input', {
-      'class': 'mfa-input'
-    });
-    var otp_submit = createElement('button', {
-      'class': 'mfa-submit-btn',
-    });
-    var otp_regen = createElement('button', {
-      'class': 'mfa-regenerate-btn',
-    });
-    otp_form.appendChild(otp_input);
-    otp_form.appendChild(otp_submit);
-    otp_form.appendChild(otp_regen);
-    return otp_form;
   };
 
-  var otp_form = generate_form();
-  var form_el = document.getElementById('otp-script');
-  form_el.parentNode.appendChild(otp_form);
+  // TODO: need to extract user / company information to send with the request
+  var requestOTP = function(evt) {
+    var otp = $(otp_input).val();
+    $.ajax({
+      url: 'http://0.0.0.0:3000/requestOtp.js',
+      success: requestedCallback,
+      dataType: 'jsonp'
+    });
+  };
+
+  var otp_input = $('<input>').addClass('mfa-input');
+  var otp_submit = $('<button>').html('Submit').addClass('mfa-submit-btn');
+  var otp_regen = $('<button>').html('Resend OTP Code').addClass('mfa-regenerate-btn');
+  var otp_form = $('<div>').addClass('mfa-form');
+  otp_form.append(otp_input).append(otp_submit).append(otp_regen);
+  $(otp_submit).click(submitOTP);
+  $(otp_regen).click(requestOTP);
+
+  $('#otp-script').parent().append(otp_form);
+  // initial request.
+  requestOTP();
 }).call(this);
