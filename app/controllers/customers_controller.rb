@@ -40,17 +40,47 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.json
   def create
-    @customer = Customer.new(params[:customer])
-
     respond_to do |format|
-      if @customer.save
-        format.html { redirect_to @customer, notice: 'Customer was successfully created.' }
-        format.json { render json: @customer, status: :created, location: @customer }
+      puts params
+      @customer = Customer.new(
+        :email => params[:email],
+        :name => params[:name],
+        :phone => params[:phone],
+        :verified => false)
+      @company = Company.find(params[:company_id])
+      puts @company
+      @customer2 = Customer.find_by_email(@customer.email)
+      puts @customer2
+
+      @account_created = false
+      if @customer2.nil?
+        if @customer.save
+          puts "success"
+          @account_created = true
+        else 
+          puts "unsucessful"
+        end
+      else
+        puts "account exists. Proceeding to create entry in CompanyCustomer table"
+      end
+
+      @customer2 = Customer.find_by_email(@customer.email)
+      @customer_company = CompanyCustomer.new(
+        :company_id => @company.id, 
+        :customer_id => @customer2.id)
+
+
+      if @customer_company.save
+        format.html { redirect_to @customer_company, notice: 'Customer Company was successfully created.' }
+        format.json { render json: @customer_company, status: :created}
       else
         format.html { render action: "new" }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
+        format.json { render json: @customer_company.errors, status: :unprocessable_entity }
       end
+
+
     end
+
   end
 
   # PUT /customers/1
