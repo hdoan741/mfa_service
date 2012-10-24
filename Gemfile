@@ -7,6 +7,7 @@ gem 'rails', '3.2.8'
 
 group :development do
   gem 'sqlite3'
+  gem 'faker'
 end
 
 group :production do
@@ -27,11 +28,10 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem "bootstrap-sass", "2.0.0"
+gem 'bootstrap-sass', '2.0.0'
 gem 'devise'
 gem 'cancan'
 gem 'hoi'
-
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
