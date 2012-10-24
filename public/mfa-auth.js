@@ -17,21 +17,35 @@
   // TODO: figure out how client should make use of the validation result
   var validatedCallback = function(data) {
     console.log('validatedCallback', data);
-    alert('Received validation token = ' + data.token);
+    if (data.status = 'OK') {
+      alert('Received validation token = ' + data.token);
+      var params = {
+        validation_token: data.token,
+        user_email: user_email
+      };
+      window.location.replace(forward_url + '?' + $.param(params));
+    } else {
+      alert('Error ' + data.reason);
+      if (data.error_code == 2) {
+        requestOTP();
+      }
+    }
   };
 
   var requestedCallback = function(data) {
     console.log('requestedCallback', data);
     if (data.status = 'OK') {
       alert('An OTP code has been sent to your phone. Please enter it to validate your access!');
+    } else {
+      alert('Error ' + data.reason);
     }
   };
 
   // TODO: need to extract user / company information to send with the request
   var submitOTP = function(evt) {
-    var otp = $(otp_input).val();
+    var otp_token = $(otp_input).val();
     var data = {
-      'otp': otp,
+      'otp_token': otp_token,
       'user_email': user_email,
       'company_id': company_id
     };
@@ -65,6 +79,7 @@
 
   var company_id = $('#otp-script').attr('data-company');
   var user_email = $('#otp-script').attr('data-user');
+  var forward_url = $('#otp-script').attr('data-forward-url');
   console.log(company_id, user_email);
 
   otp_form.append(otp_input).append(otp_submit).append(otp_regen);

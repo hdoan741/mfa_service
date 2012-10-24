@@ -10,26 +10,36 @@ class StaticPagesController < ApplicationController
 
   def validate
     # 1. get customer email
+    puts params
     uemail = params[:user_email]
     customer = Customer.find_by_email(uemail)
     # 2. get token
     token = params[:otp_token]
     # 3. check in the database if token is ok
+    puts customer.to_json
     customerToken = CustomerToken.find_by_token_and_user_id(token, customer.id)
+    puts customerToken.to_json
+    puts CustomerToken.all.to_json
 
     if !customerToken
       validationResult = {
         :status => "ERROR",
+        :error_code => 1,
         :reason => "Invalid token, please try again or request another token."
       }
     elsif customerToken.expired_at > Time.now
       validationResult = {
         :status => "ERROR",
-        :reason => "Token expired."
+        :error_code => 2,
+        :reason => "Token expired. Please request another token."
       }
     elsif customerToken && customerToken.expired_at < Time.now
+      # 4. generate a validation token. the company must use its secret_key & our library to verify
+      # this token
+      token = 'sdfa'
       validationResult = {
         :status => "OK",
+        :token => token
       }
     end
 
@@ -43,7 +53,7 @@ class StaticPagesController < ApplicationController
     uemail = params[:user_email]
     cid = params[:company_id]
     customer = Customer.find_by_email(uemail)
-    company = Company.find_by_id(cid)
+    # company = Company.find_by_id(cid)
     ccexist = CompanyCustomer.find_by_company_id_and_customer_id(cid, customer.id)
     if !ccexist
       resp = {
@@ -58,12 +68,11 @@ class StaticPagesController < ApplicationController
       token = "asdf" # generate token for the customer
 
       # 2. store token in database, invalidate all tokens before that
-      oldToken = CusomterToken.find_by_user_id_and_is_valid(
-        user_id: customer.id,
-        is_valid: true
-      )
-      oldToken.is_valid = false
-      oldToken.save
+      oldToken = CustomerToken.find_by_user_id_and_is_valid(customer.id, true)
+      if oldToken
+        oldToken.is_valid = false
+        oldToken.save
+      end
 
       customerToken = CustomerToken.new({
         user_id: customer.id,
@@ -74,13 +83,13 @@ class StaticPagesController < ApplicationController
 
       if customerToken.save
         # 3. sms the token to customer
-        msg = "Your access token for #{company.name} is #{token}"
-        sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
-        sms.send(
-          :msg => msg,
-          :dest => customer.phone || "+6592710879",
-          :sender_name => company.name
-        )
+        # msg = "Your access token for #{company.name} is #{token}"
+        # sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
+        # sms.send(
+        #  :msg => msg,
+        #  :dest => customer.phone || "+6592710879",
+        #  :sender_name => company.name
+        # )
         resp = {
           status: 'OK'
         }
