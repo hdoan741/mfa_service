@@ -3,9 +3,13 @@
       <%= link_to "Easy MFA", '#', id: "logo" %>
       <nav>
         <ul class="nav pull-right">
-          <li><%= link_to "Home", '#' %></li>
-          <li><%= link_to "Help", '#' %></li>
-          <li><%= link_to "Sign in", '#' %></li>
+          <% if current_company %>
+            <li><%= link_to "Sign out", destroy_company_session_path, method: :delete %></li>
+          <% else %>
+            <li><%= link_to "Sign up", new_company_registration_path %></li>
+            <li><%= link_to "Sign in", new_company_session_path %></li>
+          <% end %>
+          <li><%= link_to "About", static_pages_about_path %></li>
         </ul>
       </nav>
     </div>
