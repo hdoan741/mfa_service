@@ -41,49 +41,59 @@ class StaticPagesController < ApplicationController
 
     if !customerToken
       validationResult = {
-        :status => "ERROR",
+        :validation_status => "ERROR",
         :error_code => 1,
         :reason => "Invalid token, please try again or request another token."
       }
-    elsif customerToken.expired_at > Time.now
+    elsif customerToken.expired_at < Time.now
       validationResult = {
-        :status => "ERROR",
+        :validation_status => "ERROR",
         :error_code => 2,
         :reason => "Token expired. Please request another token."
       }
-    elsif customerToken && customerToken.expired_at < Time.now
+    else
       # 4. generate a validation token. the company must use its secret_key & our library to verify
       # this token
-      token = 'sdfa'
+      puts 'asdfasdf asdf asdf asdf'
+      confirmation_token = 'dfsdfsdf'
       validationResult = {
-        :status => "OK",
-        :token => token
+        :validation_status => "OK",
+        :token => confirmation_token
       }
     end
+
+    puts validationResult
 
     respond_to do |format|
       format.js { render json: validationResult, callback: params[:callback] }
     end
   end
 
+  def getOtp(company)
+    hotp = OTP::OTP_Gen.new(company.secret_key || 'asdf', Time.now.to_i)  # should use counter based
+    key = hotp.generate_otp
+    puts key, hotp
+    return hotp.generate_otp()
+  end
+
   def requestOtp
-    puts params
-    uemail = params[:user_email]
-    cid = params[:company_id]
-    customer = Customer.find_by_email(uemail)
-    company = Company.find_by_id(cid)
-    ccexist = CompanyCustomer.find_by_company_id_and_customer_id(cid, customer.id)
-    if !ccexist
-      resp = {
-        status: 'ERROR',
-        reason: 'No such customer found.'
-      }
-    else
+    begin
+      puts params
+      uemail = params[:user_email]
+      cid = params[:company_id]
+      customer = Customer.find_by_email(uemail)
+      company = Company.find_by_id(cid)
+      # ccexist = CompanyCustomer.find_by_company_id_and_customer_id(cid, customer.id)
+      # if !ccexist
+      #  raise Exception, 'No customer - company relation exists.'
+      # end
+
       # 1. generate the token
       #   => need customer email
       #   => need company id
       #   => might need to verify the company identity
-      token = "asdf" # generate token for the customer
+      token = getOtp(company)  # generate token for the customer
+      puts 'company: ', company, 'token: ', token
 
       # 2. store token in database, invalidate all tokens before that
       oldToken = CustomerToken.find_by_user_id_and_is_valid(customer.id, true)
@@ -95,29 +105,36 @@ class StaticPagesController < ApplicationController
       customerToken = CustomerToken.new({
         user_id: customer.id,
         token: token,
-        expired_at: Time.now + 60,
+        expired_at: Time.now + 60 * 5,
         is_valid: true
       })
 
       if customerToken.save
         # 3. sms the token to customer
-        msg = "Your access token for #{company.name} is #{token}"
-        sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
-        sms.send(
-         :msg => msg,
-         :dest => customer.phone || "+6592710879"
-         # :sender_name => company.name
-        )
+        # msg = "Your access token for #{company.name} is #{token}"
+        # sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
+        # sms.send(
+        #  :msg => msg,
+        #  :dest => customer.phone || "+6592710879"
+        #  :sender_name => company.name
+        # )
         resp = {
-          status: 'OK'
+          request_status: 'OK'
         }
       else
         resp = {
-          status: 'ERROR',
+          request_status: 'ERROR',
           reason: 'Fail to generate token'
         }
       end
+    rescue Exception => exc
+      logger.error("Message for the log file #{exc.message}")
+      resp = {
+        request_status: 'ERROR',
+        reason: 'No customer or companies exists.'
+      }
     end
+
     respond_to do |format|
       format.js do
         render(json: resp, callback: params[:callback])
