@@ -30,37 +30,49 @@ class StaticPagesController < ApplicationController
     # 1. get customer email
     puts params
     uemail = params[:user_email]
-    customer = Customer.find_by_email(uemail)
-    # 2. get token
-    token = params[:otp_token]
-    # 3. check in the database if token is ok
-    puts customer.to_json
-    customerToken = CustomerToken.find_by_token_and_user_id(token, customer.id)
-    puts customerToken.to_json
-    puts CustomerToken.all.to_json
+    begin
+      customer = Customer.find_by_email(uemail)
+      # 2. get token
+      token = params[:otp_token]
+      # 3. check in the database if token is ok
+      puts customer.to_json
+      customerToken = CustomerToken.find_by_token_and_user_id(token, customer.id)
+      puts customerToken.to_json
+      puts CustomerToken.all.to_json
 
-    if !customerToken
+      if !customerToken
+        validationResult = {
+          :validation_status => "ERROR",
+          :error_code => 1,
+          :reason => "Invalid token, please try again or request another token."
+        }
+      elsif customerToken.expired_at < Time.now
+        validationResult = {
+          :validation_status => "ERROR",
+          :error_code => 2,
+          :reason => "Token expired. Please request another token."
+        }
+      else
+        # 4. generate a validation token. the company must use its secret_key & our library to verify
+        # this token
+        puts 'asdfasdf asdf asdf asdf'
+        confirmation_token = 'dfsdfsdf'
+        validationResult = {
+          :validation_status => "OK",
+          :token => confirmation_token
+        }
+      end
+    rescue Exception
       validationResult = {
         :validation_status => "ERROR",
-        :error_code => 1,
-        :reason => "Invalid token, please try again or request another token."
-      }
-    elsif customerToken.expired_at < Time.now
-      validationResult = {
-        :validation_status => "ERROR",
-        :error_code => 2,
-        :reason => "Token expired. Please request another token."
-      }
-    else
-      # 4. generate a validation token. the company must use its secret_key & our library to verify
-      # this token
-      puts 'asdfasdf asdf asdf asdf'
-      confirmation_token = 'dfsdfsdf'
-      validationResult = {
-        :validation_status => "OK",
-        :token => confirmation_token
+        :reason => "Something went wrong."
       }
     end
+
+    validationResult = {
+      :validation_status => "OK",
+      :token => confirmation_token
+    }
 
     puts validationResult
 
