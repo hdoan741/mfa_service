@@ -9,6 +9,6 @@ class Company < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
   attr_accessible :app_id, :name, :secret_key
 
-  has_many :companycustomers
+  has_many :companycustomers, :class_name => "CompanyCustomer"
   has_many :customers, through: :companycustomers
 end
