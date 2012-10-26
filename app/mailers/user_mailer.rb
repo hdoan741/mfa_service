@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
 
 	def welcome_add_company_account_email(user)
 		@user = user
-		@url = root_url
+		@url = "http://mfa-service.herokuapp.com"
 		mail(:to => user.email, :subject => "You have added a sign in for a company")
 	end
 
