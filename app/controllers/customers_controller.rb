@@ -82,6 +82,7 @@ class CustomersController < ApplicationController
       if @account_created 
         # Tell the UserMailer to send a welcome Email after save
         @user = @customer
+        UserMailer.welcome_email(@user).deliver
       else
         # Nothing
       end
@@ -97,7 +98,6 @@ class CustomersController < ApplicationController
         # Tell the User mailer to send a add company account email
         #@user = @customer2
         UserMailer.welcome_add_company_account_email(@user).deliver
-        # UserMailer.welcome_email(@user).deliver
 
         format.html { redirect_to @customer_company, notice: 'Customer Company was successfully created.' }
         format.json { render json: @customer_company, status: :created}
