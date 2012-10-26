@@ -97,6 +97,7 @@ class StaticPagesController < ApplicationController
 
       # 2. store token in database, invalidate all tokens before that
       oldToken = CustomerToken.find_by_user_id_and_is_valid(customer.id, true)
+      puts oldToken
       if oldToken
         oldToken.is_valid = false
         oldToken.save
@@ -128,7 +129,7 @@ class StaticPagesController < ApplicationController
         }
       end
     rescue Exception => exc
-      logger.error("Message for the log file #{exc.message}")
+      logger.error("Message for the log file #{exc.backtrace.join("\n")}")
       resp = {
         request_status: 'ERROR',
         reason: 'No customer or companies exists.'
