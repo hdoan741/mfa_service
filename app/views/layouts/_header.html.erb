@@ -3,6 +3,7 @@
       <%= link_to "Easy MFA", '#', id: "logo" %>
       <nav>
         <ul class="nav pull-right">
+          <li><%= link_to "Change Customer Detail", changePasswordPage_path %></li>
           <% if current_company %>
             <li><%= link_to "Sign out", destroy_company_session_path, method: :delete %></li>
           <% else %>
