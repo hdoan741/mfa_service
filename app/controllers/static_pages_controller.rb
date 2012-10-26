@@ -96,12 +96,14 @@ class StaticPagesController < ApplicationController
       puts 'company: ', company, 'token: ', token
 
       # 2. store token in database, invalidate all tokens before that
+=begin
       oldToken = CustomerToken.find_by_user_id_and_is_valid(customer.id, true)
       puts oldToken
       if oldToken
         oldToken.is_valid = false
         oldToken.save
       end
+=end
 
       customerToken = CustomerToken.new({
         user_id: customer.id,
