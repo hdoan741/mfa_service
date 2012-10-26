@@ -17,7 +17,7 @@
   // TODO: figure out how client should make use of the validation result
   var validatedCallback = function(data) {
     console.log('validatedCallback', data);
-    if (data.status = 'OK') {
+    if (data.validation_status == 'OK') {
       alert('Received validation token = ' + data.token);
       var params = {
         validation_token: data.token,
@@ -34,7 +34,7 @@
 
   var requestedCallback = function(data) {
     console.log('requestedCallback', data);
-    if (data.status = 'OK') {
+    if (data.request_status == 'OK') {
       alert('An OTP code has been sent to your phone. Please enter it to validate your access!');
     } else {
       alert('Error ' + data.reason);
@@ -50,7 +50,7 @@
       'company_id': company_id
     };
     $.ajax({
-      url: 'https://mfa-service.herokuapp.com/validate.js',
+      url: base_url + '/validate.js',
       data: data,
       success: validatedCallback,
       dataType: 'jsonp'
@@ -65,7 +65,7 @@
       'company_id': company_id
     };
     $.ajax({
-      url: 'https://mfa-service.herokuapp.com/requestOtp.js',
+      url: base_url + '/requestOtp.js',
       data: data,
       success: requestedCallback,
       dataType: 'jsonp'
@@ -80,6 +80,10 @@
   var company_id = $('#otp-script').attr('data-company');
   var user_email = $('#otp-script').attr('data-user');
   var forward_url = $('#otp-script').attr('data-forward-url');
+  var source_url = $('#otp-script').attr('src');
+  var segments = source_url.split('/');
+  var base_url = segments[0] + '//' + segments[2];
+  console.log('base url: ', base_url);
   console.log(company_id, user_email);
 
   otp_form.append(otp_input).append(otp_submit).append(otp_regen);
