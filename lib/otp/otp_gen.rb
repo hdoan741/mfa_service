@@ -23,6 +23,7 @@ module OTP
 
     def generate_otp
       begin
+        @count += 1
         return calculate_hotp(@secret, @count, @digest, @digits)
       rescue Exception => e
         @@logger.fatal{"Failure in generating OTP: #{e}"}
@@ -58,8 +59,10 @@ module OTP
 
     def self.string_to_hex_value(count, padding=nil, pad_char="0")
       begin
-        return_string = ""
         hex_count = count.to_i.to_s(16)
+        return hex_count
+=begin
+        return_string = ""
         ((padding.to_i*2) - hex_count.size).times{hex_count.insert(0,pad_char)} if padding
         hex_count = "0" + hex_count if hex_count.size%2==1
         temp_char = "0"
@@ -69,6 +72,7 @@ module OTP
           return_string << temp_char
         }
         return return_string
+=end
       rescue Exception => e
         @@logger.fatal{"Failure in converting string to hex value Reason #{e.backtrace.join("\n")}"}
       end

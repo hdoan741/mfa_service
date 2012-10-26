@@ -53,7 +53,7 @@ class StaticPagesController < ApplicationController
     uemail = params[:user_email]
     cid = params[:company_id]
     customer = Customer.find_by_email(uemail)
-    # company = Company.find_by_id(cid)
+    company = Company.find_by_id(cid)
     ccexist = CompanyCustomer.find_by_company_id_and_customer_id(cid, customer.id)
     if !ccexist
       resp = {
@@ -83,13 +83,13 @@ class StaticPagesController < ApplicationController
 
       if customerToken.save
         # 3. sms the token to customer
-        # msg = "Your access token for #{company.name} is #{token}"
-        # sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
-        # sms.send(
-        #  :msg => msg,
-        #  :dest => customer.phone || "+6592710879",
-        #  :sender_name => company.name
-        # )
+        msg = "Your access token for #{company.name} is #{token}"
+        sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
+        sms.send(
+         :msg => msg,
+         :dest => customer.phone || "+6592710879"
+         # :sender_name => company.name
+        )
         resp = {
           status: 'OK'
         }
