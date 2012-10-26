@@ -30,7 +30,15 @@ class StaticPagesController < ApplicationController
     puts params[:company_id]
     puts params[:company_secret]
     puts params[:token]
-    return Random.rand(2) != 0
+    if Random.rand(2) == 0
+      result = { status: "ERROR" }
+    else
+      result = { status: "OK" }
+    end
+    respond_to do |format|
+      format.html { render json: result }
+    end
+
   end
 
   def validate

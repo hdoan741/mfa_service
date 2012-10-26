@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024095231) do
+ActiveRecord::Schema.define(:version => 20121026070658) do
 
   create_table "companies", :force => true do |t|
     t.string   "name"
@@ -44,12 +44,12 @@ ActiveRecord::Schema.define(:version => 20121024095231) do
   end
 
   create_table "customer_tokens", :force => true do |t|
-    t.string   "user_id"
+    t.integer  "user_id",    :limit => 255
     t.string   "token"
     t.boolean  "is_valid"
     t.datetime "expired_at"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   create_table "customers", :force => true do |t|
