@@ -50,7 +50,7 @@
       'company_id': company_id
     };
     $.ajax({
-      url: 'http://0.0.0.0:3000/validate.js',
+      url: 'https://mfa-service.herokuapp.com/validate.js',
       data: data,
       success: validatedCallback,
       dataType: 'jsonp'
@@ -65,7 +65,7 @@
       'company_id': company_id
     };
     $.ajax({
-      url: 'http://0.0.0.0:3000/requestOtp.js',
+      url: 'https://mfa-service.herokuapp.com/requestOtp.js',
       data: data,
       success: requestedCallback,
       dataType: 'jsonp'
