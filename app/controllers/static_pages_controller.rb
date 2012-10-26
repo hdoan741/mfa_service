@@ -1,4 +1,5 @@
 class StaticPagesController < ApplicationController
+  require "digest"
   def home
   end
 
@@ -7,7 +8,24 @@ class StaticPagesController < ApplicationController
 
   def about
   end
+  
+  def changePasswordPage
+  end
 
+  def changePassword 
+    puts "YAHOO!!"
+    puts params
+    @email = params[:email]
+    @customer = Customer.find_by_email(@email)
+    if @customer.nil?
+      # do nothing
+    else
+      @secret =  Digest::MD5.hexdigest(@customer.email)
+      UserMailer.password_link_email(@customer, @secret).deliver
+      puts "[UserMailer] Email has been sent/ queued for sending"
+    end
+  end
+  
   def validate
     # 1. get customer email
     puts params

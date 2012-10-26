@@ -15,6 +15,10 @@ MfaService::Application.routes.draw do
 
   match "requestOtp" => "static_pages#requestOtp"
 
+  match "changePasswordPage" => "static_pages#changePasswordPage"
+  #get "changePassword/:email"
+  match "changePassword" => "static_pages#changePassword"
+
   devise_for :companies, :controllers => {:registrations => "companies/registrations"}
 
   resources :customers

@@ -1,4 +1,5 @@
 class CustomersController < ApplicationController
+  require "digest"
   # GET /customers
   # GET /customers.json
   def index
@@ -34,7 +35,20 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
-    @customer = Customer.find(params[:id])
+    # check if valid request
+    
+    @digest = params[:confirm]
+    @customer2 = Customer.find(params[:id])
+
+    @digest2 = Digest::MD5.hexdigest(@customer2.email)
+
+    if @digest.to_s == @digest2.to_s
+      @customer = Customer.find(params[:id])
+    else
+      # invalidate the request
+      @customer = nil
+    end
+    
   end
 
   # POST /customers
