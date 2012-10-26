@@ -15,6 +15,8 @@ MfaService::Application.routes.draw do
 
   match "requestOtp" => "static_pages#requestOtp"
 
+  match "verifyToken" => "static_pages#verifyToken"
+
   match "changePasswordPage" => "static_pages#changePasswordPage"
   #get "changePassword/:email"
   match "changePassword" => "static_pages#changePassword"

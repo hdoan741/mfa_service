@@ -8,11 +8,11 @@ class StaticPagesController < ApplicationController
 
   def about
   end
-  
+
   def changePasswordPage
   end
 
-  def changePassword 
+  def changePassword
     puts "YAHOO!!"
     puts params
     @email = params[:email]
@@ -25,7 +25,14 @@ class StaticPagesController < ApplicationController
       puts "[UserMailer] Email has been sent/ queued for sending"
     end
   end
-  
+
+  def verifyToken
+    puts params[:company_id]
+    puts params[:company_secret]
+    puts params[:token]
+    return Random.rand(2) != 0
+  end
+
   def validate
     # 1. get customer email
     puts params
@@ -71,7 +78,7 @@ class StaticPagesController < ApplicationController
 
     validationResult = {
       :validation_status => "OK",
-      :token => confirmation_token
+      :token => "HelloDaddy"
     }
 
     puts validationResult
