@@ -21,7 +21,7 @@ MfaService::Application.routes.draw do
   #get "changePassword/:email"
   match "changePassword" => "static_pages#changePassword"
 
-  devise_for :companies, :controllers => {:registrations => "companies/registrations"}
+  devise_for :companies
 
   resources :customers
 

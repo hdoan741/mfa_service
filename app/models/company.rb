@@ -1,4 +1,6 @@
 class Company < ActiveRecord::Base
+  before_save :generate_secret
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -11,4 +13,11 @@ class Company < ActiveRecord::Base
 
   has_many :companycustomers, :class_name => "CompanyCustomer"
   has_many :customers, through: :companycustomers
+
+  def generate_secret
+    s = OTP::Secret_Gen.new(self.email)
+    secret = s.generate_secret
+    self.secret_key = secret
+    puts self.to_json
+  end
 end
