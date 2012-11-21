@@ -30,11 +30,11 @@ class StaticPagesController < ApplicationController
     puts params[:company_id]
     puts params[:company_secret]
     puts params[:token]
-    if Random.rand(2) == 0
-      result = { status: "ERROR" }
-    else
-      result = { status: "OK" }
-    end
+    # if Random.rand(2) == 0
+    #  result = { status: "ERROR" }
+    # else
+    result = { status: "OK" }
+    # end
     respond_to do |format|
       format.html { render json: result }
     end
@@ -47,6 +47,7 @@ class StaticPagesController < ApplicationController
     uemail = params[:user_email]
     begin
       customer = Customer.find_by_email(uemail)
+      company = Company.find(params[:company_id])
       # 2. get token
       token = params[:otp_token]
       # 3. check in the database if token is ok
@@ -70,12 +71,12 @@ class StaticPagesController < ApplicationController
       else
         # 4. generate a validation token. the company must use its secret_key & our library to verify
         # this token
-        puts 'asdfasdf asdf asdf asdf'
-        confirmation_token = 'dfsdfsdf'
+        confirmation_token = getOtp(company)
         validationResult = {
           :validation_status => "OK",
           :token => confirmation_token
         }
+        # TODO: put this token into table for double verification
       end
     rescue Exception
       validationResult = {
@@ -84,10 +85,10 @@ class StaticPagesController < ApplicationController
       }
     end
 
-    validationResult = {
-      :validation_status => "OK",
-      :token => "HelloDaddy"
-    }
+    # validationResult = {
+    #  :validation_status => "OK",
+    #  :token => "HelloDaddy"
+    # }
 
     puts validationResult
 
