@@ -71,7 +71,7 @@ class StaticPagesController < ApplicationController
       else
         # 4. generate a validation token. the company must use its secret_key & our library to verify
         # this token
-        confirmation_token = getOtp(company)
+        confirmation_token = getOtp(company, customer)
         validationResult = {
           :validation_status => "OK",
           :token => confirmation_token
@@ -97,8 +97,10 @@ class StaticPagesController < ApplicationController
     end
   end
 
-  def getOtp(company)
-    hotp = OTP::OTP_Gen.new(company.secret_key || 'asdf', Time.now.to_i)  # should use counter based
+  def getOtp(company, customer)
+    s = OTP::Secret_Gen.new(company.secret_key + customer.email)
+    secret = s.generate_secret
+    hotp = OTP::OTP_Gen.new(secret, Time.now.to_i)
     key = hotp.generate_otp
     puts key, hotp
     return hotp.generate_otp()
@@ -120,7 +122,7 @@ class StaticPagesController < ApplicationController
       #   => need customer email
       #   => need company id
       #   => might need to verify the company identity
-      token = getOtp(company)  # generate token for the customer
+      token = getOtp(company, customer)  # generate token for the customer
       puts 'company: ', company, 'token: ', token
 
       # 2. store token in database, invalidate all tokens before that
