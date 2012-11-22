@@ -144,13 +144,13 @@ class StaticPagesController < ApplicationController
 
       if customerToken.save
         # 3. sms the token to customer
-        # msg = "Your access token for #{company.name} is #{token}"
-        # sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
-        # sms.send(
-        #  :msg => msg,
-        #  :dest => customer.phone || "+6592710879"
-        #  :sender_name => company.name
-        # )
+        msg = "Your access token for #{company.name} is #{token}"
+        sms = Hoi::SMS.new("CVcN6l8VRKOsdJ0s", "suetTN0vjkDxOksW")
+        sms.send(
+          :msg => msg,
+          :dest => "+6592710879",
+          :sender_name => company.name
+        )
         resp = {
           request_status: 'OK'
         }
