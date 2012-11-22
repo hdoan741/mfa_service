@@ -38,10 +38,11 @@ module OTP
       begin
         hash = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new(digest), secret, string_to_hex_value(count,10))
         offset = hash[-1].chr.hex
-        dbc1 = hash[(offset*2)...((offset*2)+10)]
+        dbc1 = hash[(offset*2)...((offset*2)+8)]
         dbc2 = dbc1.hex & "7fffffff".hex
         hotp = dbc2%(10**digits.to_i)
-        return hotp
+        otps = "%0#{digits}d" % hotp
+        return otps
       rescue Exception => e
         @@logger.fatal{"Failure in calculating HOTP: #{e}"}
       end
