@@ -28,7 +28,7 @@ module OTP
       begin
         b32 = ''
         OpenSSL::Random.random_bytes(length).each_byte do |b|
-          b32 << CHARS[b % 32]
+          b32 << CHARS[b % 62]
         end
         b32
       rescue Exception => e
